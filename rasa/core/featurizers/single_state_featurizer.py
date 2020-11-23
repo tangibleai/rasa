@@ -267,7 +267,15 @@ class SingleStateFeaturizer:
             # we cannot build a classifier if there are less than 2 class
             return {}
 
-        parsed_text = interpreter.featurize_message(Message({TEXT: entity_data[TEXT]}))
+        entity_text = entity_data[TEXT]
+        parsed_text = interpreter.featurize_message(Message({TEXT: entity_text}))
+        if not parsed_text:
+            raise UserWarning(
+                f"No feature for '{entity_text}' in the NLU interpreter. "
+                f"Use `rasa train` rather than `rasa train core` if there are "
+                f"e2e stories in stories.yaml"
+            )
+
         entities = entity_data.get(ENTITIES, [])
 
         _tags = []
